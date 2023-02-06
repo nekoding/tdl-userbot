@@ -1,10 +1,8 @@
 {
-    "verbose": true,
-    "debug": true,
-    "exec": "ts-node ./src/app.ts",
-    "watch": [
-      "./src/**/*.ts"
-    ],
-    "ext": "ts",
-    "inspect": true
-  }
+  "verbose": true,
+  "debug": true,
+  "exec": "npx tsx ./src/app.ts",
+  "watch": ["./src/**/*.ts"],
+  "ext": "ts",
+  "inspect": true
+}
