@@ -44,8 +44,6 @@ export const handleUpdateNewMessage = async (
             conversationId
           })
 
-          console.log(session)
-
           const data: InputMessageContent$Input = {
             _: "inputMessageText",
             text: {
