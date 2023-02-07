@@ -2,7 +2,7 @@ import { Client } from "tdl";
 import { TDLib } from "tdl-tdlib-addon";
 import { getTdjson } from "prebuilt-tdlib";
 import dotenv from "dotenv";
-import { handleUpdateMessage } from "./handlers";
+import { handleUpdateMessageSendSucceeded, handleUpdateNewMessage } from "./handlers";
 // import { ChatGpt } from "./command";
 
 dotenv.config();
@@ -19,12 +19,11 @@ client.login();
 client.on("update", (update) => {
   switch (update["_"]) {
     case "updateNewMessage":
-      handleUpdateMessage(client, update.message);
+      handleUpdateNewMessage(client, update.message);
       break;
 
     case "updateMessageSendSucceeded":
-      console.log("pesan brehasil terkirim", update);
-      client.close();
+      handleUpdateMessageSendSucceeded(client, update.message);
       break;
 
     default:
