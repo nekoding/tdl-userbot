@@ -39,12 +39,10 @@ export const handleUpdateNewMessage = async (
           );
 
           // tracking conversation
-          if (session.chatgpt) {
-            updateSessionById(senderId, {
-              parentMessageId,
-              conversationId
-            })
-          }
+          updateSessionById(senderId, {
+            parentMessageId,
+            conversationId
+          })
 
           console.log(session)
 
