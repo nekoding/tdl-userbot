@@ -31,7 +31,7 @@ export const handleUpdateNewMessage = async (
         const senderId = message.sender_id.user_id
         const session = saveSession(senderId)
 
-        if (msgText.trim().match(prefix)) {
+        if (msgText.trim().match(prefix)?.index === 0) {
           const question = msgText.trim().slice(prefix.length).trim();
           const { parentMessageId, conversationId, text } = await ChatGpt(
             question,
