@@ -1,16 +1,20 @@
 import Client from "tdl";
 import { InputMessageContent$Input, message } from "tdlib-types";
 import { ChatGpt } from "./command";
+import dotenv from "dotenv";
+import { saveSession, updateSessionById } from "./store";
+
+dotenv.config();
 
 export const handleUpdateNewMessage = async (
   client: Client,
   message: message
 ) => {
   try {
-    const regex = new RegExp("^\\!yui", "gm");
+    const prefix = process.env.PREFIX_COMMAND as string;
     const chatId = message.chat_id;
     const messageId = message.id;
-    const messageContent =
+    const msgText =
       message.content._ === "messageText" ? message.content.text.text : null;
     const chatInfo = await client.invoke({
       _: "getChat",
@@ -19,19 +23,40 @@ export const handleUpdateNewMessage = async (
 
     // Handle private chat
     if (chatInfo.type._ === "chatTypePrivate") {
-      if (messageContent) {
-        if (messageContent.trim().match(regex)) {
-          const question = messageContent.trim().slice(4).trim();
-          const resChatGpt = await ChatGpt(question)
+      if (msgText) {
+        if (message.sender_id._ !== "messageSenderUser") {
+          return
+        }
+
+        const senderId = message.sender_id.user_id
+        const session = saveSession(senderId)
+
+        if (msgText.trim().match(prefix)) {
+          const question = msgText.trim().slice(prefix.length).trim();
+          const { parentMessageId, conversationId, text } = await ChatGpt(
+            question,
+            session.chatgpt
+          );
+
+          // tracking conversation
+          if (session.chatgpt) {
+            updateSessionById(senderId, {
+              parentMessageId,
+              conversationId
+            })
+          }
+
+          console.log(session)
 
           const data: InputMessageContent$Input = {
             _: "inputMessageText",
             text: {
               _: "formattedText",
-              text: resChatGpt.text,
+              text: text,
             },
           };
 
+          // send message
           await client.invoke({
             _: "sendMessage",
             chat_id: chatId,
@@ -51,5 +76,5 @@ export const handleUpdateMessageSendSucceeded = async (
   client: Client,
   message: message
 ) => {
-  console.log(message)
+  console.log(message);
 };
