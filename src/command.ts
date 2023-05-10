@@ -7,7 +7,7 @@ dotenv.config();
 const api = new ChatGPTAPI({
   apiKey: process.env.OPENAPI_API_KEY as string,
   completionParams: {
-    model: "text-davinci-003"
+    model: process.env.OPENAI_MODEL ?? "text-davinci-003"
   }
 });
 
