@@ -6,6 +6,9 @@ dotenv.config();
 
 const api = new ChatGPTAPI({
   apiKey: process.env.OPENAPI_API_KEY as string,
+  completionParams: {
+    model: "text-davinci-003"
+  }
 });
 
 export const ChatGpt = async (message: string, options?: ChatGPTConversation | null) => {
